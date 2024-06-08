@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login Page</title>
+    <!-- <link rel="stylesheet" type="text/css" href="styles.css"> -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="maindiv">
+        <div class="login-box">
+            <h2>Login</h2>
+            <form action="login.php" method="POST" id="loginForm">
+                <div class="textbox">
+                    <input type="text" name="username" placeholder="Username">
+                </div>
+                <div class="textbox">
+                    <input type="password" name="password" placeholder="Password">
+                </div>
+                <input type="submit" name="login" value="Login">
+            </form>
+            <br>
+            <button id="toggleButton" onclick="toggleFile()">Toggle PHP File</button>
+            <p id="fileStatus">Currently using: login.php (Safe)</p>
+        </div>
+
+        <div class="login-box" id="details">
+            <h3>Login Credentials: </h3>
+            <p>
+                Username: admin <br>
+                Password: password <br>
+                <br>
+                <br>
+            <h3>Injection Command <br>
+                Examples: </h3>
+
+            <ul>
+                <li>admin' or '1'='1</li>
+                <br>
+                <li>admin' -- </li>
+                <br>
+                <li>' OR 1=1 --</li>
+            </ul>
+            </p>
+        </div>
+    </div>
+
+    <div class="infocontainer">
+    <div class="infobox">
+        <h3>Explanation: </h3>
+        <p>
+            SELECT * FROM users WHERE username='$username' AND password='$password' -- is used for credential comparison
+            with the actual database.
+            <br>
+            <br>
+            Upon using commands like: ' OR 1=1 -- as username the query becomes SELECT * FROM users WHERE username= <b>
+                '' OR 1=1 <u>-- AND password='$password'</u></b>
+            <br>
+            <br>
+            as SQL uses " -- " for comments the query part <u>AND password='$password'</u> becomes a comment . This
+            leads to bypassing the password field and treating it just like a comment.
+            <br>
+            <br>
+            As <b>" 1=1" </b> is always true,access is granted.
+        </p>
+    </div>
+</div>
+    <script>
+        var isSafeFile = true;
+
+        function toggleFile() {
+            isSafeFile = !isSafeFile;
+            var filename = isSafeFile ? 'login.php' : 'unsafe_login.php';
+
+            // Update the form action
+            document.getElementById('loginForm').action = filename;
+
+            // Update the status message
+            var fileStatus = document.getElementById('fileStatus');
+            fileStatus.innerHTML = 'Currently using: ' + filename + (isSafeFile ? ' (Safe)' : ' (Unsafe)');
+            
+            return false; // Prevent form submission
+        }
+    </script>
+</body>
+
+</html>
